@@ -2,35 +2,99 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Nombre de tu Web</title>
+  <title>Inhabitable</title>
+
   <style>
-    body { font-family: Arial, sans-serif; background: #0d0d0d; color: #eaeaea; text-align: center; padding: 60px 20px; }
-    h1 { font-size: 3em; margin-bottom: 10px; }
-    h2 { margin-top: 50px; }
-    p { max-width: 600px; margin: auto; line-height: 1.6; }
-    .btn { display: inline-block; margin-top: 20px; padding: 12px 25px; background: #fff; color: #000; text-decoration: none; transition: 0.3s; }
-    .btn:hover { background: #ccc; }
-    .project { margin: 20px 0; font-style: italic; }
+    body {
+      background: #0a0a0a;
+      color: #eaeaea;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    h1 {
+      font-size: 3em;
+      margin-bottom: 10px;
+      letter-spacing: 2px;
+    }
+
+    p {
+      max-width: 600px;
+      margin: 20px auto;
+      line-height: 1.6;
+    }
+
+    .frase {
+      font-style: italic;
+      opacity: 0.7;
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 30px;
+      padding: 12px 25px;
+      background: #fff;
+      color: #000;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background: #ccc;
+      transform: scale(1.05);
+    }
+
+    .seccion {
+      margin-top: 80px;
+    }
+
+    hr {
+      border: 0;
+      height: 1px;
+      background: #333;
+      margin: 60px auto;
+      width: 60%;
+    }
   </style>
 </head>
+
 <body>
 
-<h1>Nombre de tu Web</h1>
-<p>Frase de impacto que intrigue y enganche al lector.</p>
+  <!-- Título -->
+  <h1>INHABITABLE</h1>
+  <p class="frase">No todo lo que existe debería hacerlo.</p>
 
-<h2>Mi libro</h2>
-<p>Sinopsis breve de tu libro...</p>
-<a class="btn">Próximamente</a>
+  <hr>
 
-<h2>Proyectos futuros</h2>
-<div class="project">Proyecto 1: Ideas que no existen aún</div>
-<div class="project">Proyecto 2: Mini historias experimentales</div>
+  <!-- Sección libro -->
+  <div class="seccion">
+    <h2>El libro</h2>
 
-<h2>Blog / Fragmentos</h2>
-<p>Pequeñas ideas, reflexiones o fragmentos que muestran tu estilo.</p>
+    <p>
+      Hay días que desaparecen.<br>
+      Nadie los recuerda.<br>
+      No hay pruebas de que hayan ocurrido.
+    </p>
 
-<h2>Contacto / Comunidad</h2>
-<p>Correo o formulario para suscribirse a novedades</p>
+    <p>
+      Pero tú sí estuviste ahí.
+    </p>
+
+    <a class="btn">Próximamente</a>
+  </div>
+
+  <hr>
+
+  <!-- Sección extra para generar curiosidad -->
+  <div class="seccion">
+    <h2>Registro</h2>
+
+    <p class="frase">
+      Este proyecto aún no está completo.<br>
+      Tampoco debería existir.
+    </p>
+  </div>
 
 </body>
 </html>
