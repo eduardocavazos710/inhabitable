@@ -1,100 +1,242 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Inhabitable</title>
+<meta charset="UTF-8">
+<title>INHABITABLE</title>
 
-  <style>
-    body {
-      background: #0a0a0a;
-      color: #eaeaea;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 60px 20px;
-    }
+<style>
+body {
+  margin: 0;
+  background: black;
+  color: white;
+  font-family: Arial;
+  overflow: hidden;
+}
 
-    h1 {
-      font-size: 3em;
-      margin-bottom: 10px;
-      letter-spacing: 2px;
-    }
+/* INTRO */
+#intro {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
 
-    p {
-      max-width: 600px;
-      margin: 20px auto;
-      line-height: 1.6;
-    }
+#intro img {
+  width: 60%;
+  opacity: 0;
+  animation: introAnim 5s forwards;
+}
 
-    .frase {
-      font-style: italic;
-      opacity: 0.7;
-    }
+@keyframes introAnim {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  40% { opacity: 1; }
+  100% { opacity: 0; }
+}
 
-    .btn {
-      display: inline-block;
-      margin-top: 30px;
-      padding: 12px 25px;
-      background: #fff;
-      color: #000;
-      text-decoration: none;
-      transition: 0.3s;
-    }
+/* MAIN */
+#main {
+  display: none;
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+  transition: background 3s;
+}
 
-    .btn:hover {
-      background: #ccc;
-      transform: scale(1.05);
-    }
+.container {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: space-between;
+  padding: 50px;
+}
 
-    .seccion {
-      margin-top: 80px;
-    }
+/* LEFT */
+.left {
+  width: 40%;
+}
 
-    hr {
-      border: 0;
-      height: 1px;
-      background: #333;
-      margin: 60px auto;
-      width: 60%;
-    }
-  </style>
+.left img {
+  width: 80%;
+  opacity: 0;
+  animation: fadeLeft 3s forwards;
+}
+
+@keyframes fadeLeft {
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* TYPE TEXT */
+#typeText {
+  margin-top: 30px;
+  font-size: 18px;
+  min-height: 100px;
+}
+
+/* RIGHT */
+.right {
+  width: 40%;
+  text-align: center;
+}
+
+.right img {
+  width: 70%;
+}
+
+.buttons {
+  margin-top: 20px;
+}
+
+button {
+  padding: 10px 20px;
+  margin: 10px;
+  background: white;
+  border: none;
+  cursor: pointer;
+}
+</style>
 </head>
 
 <body>
 
-  <!-- Título -->
-  <h1>INHABITABLE</h1>
-  <p class="frase">No todo lo que existe debería hacerlo.</p>
+<!-- INTRO -->
+<div id="intro">
+  <img src="titulo.png">
+</div>
 
-  <hr>
+<!-- MAIN -->
+<div id="main">
+  <div class="container">
 
-  <!-- Sección libro -->
-  <div class="seccion">
-    <h2>El libro</h2>
+    <!-- LEFT -->
+    <div class="left">
+      <img src="titulo.png">
+      <div id="typeText"></div>
+    </div>
 
-    <p>
-      Hay días que desaparecen.<br>
-      Nadie los recuerda.<br>
-      No hay pruebas de que hayan ocurrido.
-    </p>
+    <!-- RIGHT -->
+    <div class="right">
+      <img src="libro.png">
+      <div class="buttons">
+        <button onclick="mostrarSinopsis()">Sobre el libro</button>
+        <button onclick="comprar()">Comprar</button>
+      </div>
+    </div>
 
-    <p>
-      Pero tú sí estuviste ahí.
-    </p>
-
-    <a class="btn">Próximamente</a>
   </div>
+</div>
 
-  <hr>
+<script>
 
-  <!-- Sección extra para generar curiosidad -->
-  <div class="seccion">
-    <h2>Registro</h2>
+// Mostrar main después del intro
+setTimeout(() => {
+  document.getElementById("intro").style.display = "none";
+  document.getElementById("main").style.display = "block";
+  document.getElementById("main").style.backgroundImage = "url('fondo.jpg')";
+  iniciarFrases();
+}, 5000);
 
-    <p class="frase">
-      Este proyecto aún no está completo.<br>
-      Tampoco debería existir.
-    </p>
-  </div>
+
+// FRASES
+const frases = [
+"Todo lo que ocultamos… encuentra la forma de salir.",
+"¿Está usted preparado para el fin?",
+"La pesadilla no terminó. Se filtró en la realidad.",
+"¿Has visto algo… que no debería estar ahí?",
+"¿Escuchaste eso?... Mejor no voltees.",
+"Si miras hacia arriba… algo podría caer sobre ti.",
+"Sonaba mi canción favorita… pero había más ruido en mi cabeza."
+];
+
+let index = 0;
+let texto = "";
+let escribiendo = true;
+
+function iniciarFrases(){
+  setInterval(animarTexto, 50);
+}
+
+function animarTexto(){
+  let target = document.getElementById("typeText");
+
+  if(escribiendo){
+    texto += frases[index].charAt(texto.length);
+    target.innerHTML = texto;
+
+    if(texto.length === frases[index].length){
+      escribiendo = false;
+      setTimeout(()=>{},1000);
+    }
+
+  } else {
+    texto = texto.slice(0,-1);
+    target.innerHTML = texto;
+
+    if(texto.length === 0){
+      escribiendo = true;
+      index = (index + 1) % frases.length;
+    }
+  }
+}
+
+
+// SINOPSIS
+function mostrarSinopsis(){
+  escribirTexto([
+"El mundo.",
+"El universo.",
+"Nosotros.",
+"",
+"La hostilidad es natural.",
+"",
+"INHABITABLE es un libro donde la realidad se quiebra...",
+"y la mente deja de ser un lugar seguro.",
+"",
+"Siete cuentos.",
+"Desde lo mundano hasta lo cósmico.",
+"",
+"El horror puede surgir de cualquier lugar.",
+"Incluso desde nosotros mismos.",
+"",
+"El miedo es el precio de la conciencia."
+]);
+}
+
+
+// COMPRAR
+function comprar(){
+  escribirTexto([
+"Precio: $250 MXN",
+"Páginas: 120",
+"Autor: Eduardo Cavazos García",
+"",
+"Próximamente disponible."
+]);
+}
+
+
+// FUNCIÓN ESCRIBIR TEXTO
+function escribirTexto(lineas){
+  let target = document.getElementById("typeText");
+  target.innerHTML = "";
+  let i = 0;
+
+  function escribirLinea(){
+    if(i < lineas.length){
+      target.innerHTML += lineas[i] + "<br>";
+      i++;
+      setTimeout(escribirLinea, 200);
+    }
+  }
+
+  escribirLinea();
+}
+
+</script>
 
 </body>
 </html>
