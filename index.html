@@ -69,9 +69,9 @@ body {
 #typeText {
   margin-top: 30px;
   font-size: 18px;
-  height: 150px;
-  overflow: hidden;
+  height: 160px;
   line-height: 1.6;
+  overflow: hidden;
 }
 
 /* RIGHT */
@@ -83,7 +83,7 @@ body {
 .right img {
   width: 60%;
   max-height: 70vh;
-  object-fit: contain; /* 🔥 ARREGLA PROPORCIÓN */
+  object-fit: contain;
 }
 
 /* BUTTONS */
@@ -131,7 +131,6 @@ button {
 <script>
 
 let estado = "inicio";
-
 const typingSound = document.getElementById("typingSound");
 
 // INTRO
@@ -167,6 +166,7 @@ function iniciarFrases(){
 }
 
 function loopFrases(){
+
   if(estado !== "inicio") return;
 
   let target = document.getElementById("typeText");
@@ -175,11 +175,13 @@ function loopFrases(){
     texto += frases[index].charAt(texto.length);
     target.innerHTML = texto;
 
-    playSound();
+    // 🔊 SOLO AL ESCRIBIR
+    typingSound.currentTime = 0;
+    typingSound.play();
 
     if(texto.length === frases[index].length){
       escribiendo = false;
-      setTimeout(loopFrases, 3000); // 🔥 MÁS TIEMPO
+      setTimeout(loopFrases, 3000);
       return;
     }
 
@@ -197,13 +199,6 @@ function loopFrases(){
 }
 
 
-// SONIDO
-function playSound(){
-  typingSound.currentTime = 0;
-  typingSound.play();
-}
-
-
 // FADE TEXTO
 function fadeOutTexto(callback){
   let target = document.getElementById("typeText");
@@ -218,7 +213,7 @@ function fadeOutTexto(callback){
 }
 
 
-// TOGGLE
+// TOGGLE SINOPSIS
 function toggleInfo(){
 
   let titulo = document.getElementById("tituloMain");
@@ -232,20 +227,11 @@ function toggleInfo(){
 
     fadeOutTexto(() => {
       escribirBloque([
-"El mundo.",
-"El universo.",
-"Nosotros.",
+"El mundo, el universo, nosotros. La hostilidad es natural.",
 "",
-"La hostilidad es natural.",
-"",
-"INHABITABLE es un libro donde la realidad se quiebra...",
-"y la mente deja de ser un lugar seguro.",
-"",
-"Siete cuentos.",
-"Desde lo mundano hasta lo cósmico.",
-"",
-"El horror puede surgir de cualquier lugar.",
-"Incluso desde nosotros mismos.",
+"INHABITABLE es un libro de terror y misterio donde el miedo se filtra cuando la realidad se quiebra y la mente deja de ser un lugar seguro.",
+"Siete cuentos, distintas situaciones, desde lo mundano hasta lo cósmico.",
+"El horror puede surgir de cualquier lugar, incluso desde el fondo de nosotros mismos.",
 "",
 "El miedo es el precio de la conciencia."
       ]);
@@ -273,7 +259,6 @@ function escribirBloque(lineas){
   function escribir(){
     if(i < lineas.length){
       target.innerHTML += lineas[i] + "<br>";
-      playSound();
       i++;
       setTimeout(escribir, 120);
     }
