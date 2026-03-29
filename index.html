@@ -4,12 +4,14 @@
 <meta charset="UTF-8">
 <title>INHABITABLE</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+
 <style>
 body {
   margin: 0;
   background: black;
   color: white;
-  font-family: Arial;
+  font-family: 'Montserrat', sans-serif;
   overflow: hidden;
 }
 
@@ -60,21 +62,16 @@ body {
 
 .left img {
   width: 70%;
-  opacity: 0;
-  animation: fadeLeft 3s forwards;
+  transition: opacity 1.5s;
 }
 
-@keyframes fadeLeft {
-  from {opacity:0; transform:translateX(-40px);}
-  to {opacity:1; transform:translateX(0);}
-}
-
-/* TEXT */
+/* TEXTO */
 #typeText {
   margin-top: 30px;
   font-size: 18px;
-  min-height: 120px;
-  line-height: 1.5;
+  height: 150px;
+  overflow: hidden;
+  line-height: 1.6;
 }
 
 /* RIGHT */
@@ -84,8 +81,9 @@ body {
 }
 
 .right img {
-  width: 60%; /* 🔥 MÁS PEQUEÑO */
+  width: 60%;
   max-height: 70vh;
+  object-fit: contain; /* 🔥 ARREGLA PROPORCIÓN */
 }
 
 /* BUTTONS */
@@ -105,6 +103,8 @@ button {
 
 <body>
 
+<audio id="typingSound" src="typing.mp3"></audio>
+
 <div id="intro">
   <img src="titulo.png">
 </div>
@@ -113,7 +113,7 @@ button {
   <div class="container">
 
     <div class="left">
-      <img src="titulo.png">
+      <img id="tituloMain" src="titulo.png">
       <div id="typeText"></div>
     </div>
 
@@ -132,7 +132,9 @@ button {
 
 let estado = "inicio";
 
-// INTRO → MAIN
+const typingSound = document.getElementById("typingSound");
+
+// INTRO
 setTimeout(() => {
   document.getElementById("intro").style.display = "none";
   document.getElementById("main").style.display = "block";
@@ -165,17 +167,19 @@ function iniciarFrases(){
 }
 
 function loopFrases(){
-  let target = document.getElementById("typeText");
-
   if(estado !== "inicio") return;
+
+  let target = document.getElementById("typeText");
 
   if(escribiendo){
     texto += frases[index].charAt(texto.length);
     target.innerHTML = texto;
 
+    playSound();
+
     if(texto.length === frases[index].length){
       escribiendo = false;
-      setTimeout(loopFrases, 1200);
+      setTimeout(loopFrases, 3000); // 🔥 MÁS TIEMPO
       return;
     }
 
@@ -193,16 +197,40 @@ function loopFrases(){
 }
 
 
-// TOGGLE SINOPSIS
+// SONIDO
+function playSound(){
+  typingSound.currentTime = 0;
+  typingSound.play();
+}
+
+
+// FADE TEXTO
+function fadeOutTexto(callback){
+  let target = document.getElementById("typeText");
+  target.style.transition = "opacity 1.5s";
+  target.style.opacity = 0;
+
+  setTimeout(() => {
+    target.innerHTML = "";
+    target.style.opacity = 1;
+    callback();
+  }, 1500);
+}
+
+
+// TOGGLE
 function toggleInfo(){
 
+  let titulo = document.getElementById("tituloMain");
   let btn = document.getElementById("btn1");
 
   if(estado === "inicio"){
     estado = "sinopsis";
     btn.innerText = "Regresar";
 
-    borrarTexto(() => {
+    titulo.style.opacity = 0;
+
+    fadeOutTexto(() => {
       escribirBloque([
 "El mundo.",
 "El universo.",
@@ -227,7 +255,9 @@ function toggleInfo(){
     estado = "inicio";
     btn.innerText = "Sobre el libro";
 
-    borrarTexto(() => {
+    titulo.style.opacity = 1;
+
+    fadeOutTexto(() => {
       texto = "";
       iniciarFrases();
     });
@@ -235,35 +265,15 @@ function toggleInfo(){
 }
 
 
-// BORRAR TEXTO
-function borrarTexto(callback){
-  let target = document.getElementById("typeText");
-
-  function borrar(){
-    let txt = target.innerHTML.replace(/<br>/g,"");
-
-    if(txt.length > 0){
-      target.innerHTML = txt.slice(0,-1);
-      setTimeout(borrar, 20);
-    } else {
-      callback();
-    }
-  }
-
-  borrar();
-}
-
-
 // ESCRIBIR BLOQUE
 function escribirBloque(lineas){
   let target = document.getElementById("typeText");
-  target.innerHTML = "";
-
   let i = 0;
 
   function escribir(){
     if(i < lineas.length){
       target.innerHTML += lineas[i] + "<br>";
+      playSound();
       i++;
       setTimeout(escribir, 120);
     }
@@ -273,11 +283,14 @@ function escribirBloque(lineas){
 }
 
 
-// COMPRAR
+// COMPRA
 function comprar(){
   estado = "compra";
 
-  borrarTexto(() => {
+  let titulo = document.getElementById("tituloMain");
+  titulo.style.opacity = 0;
+
+  fadeOutTexto(() => {
     escribirBloque([
 "Precio: $250 MXN",
 "Páginas: 120",
