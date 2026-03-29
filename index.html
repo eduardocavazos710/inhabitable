@@ -27,24 +27,22 @@ body {
 
 #intro img {
   width: 60%;
-  opacity: 0;
-  animation: introAnim 5s forwards;
+  animation: fadeInOut 5s forwards;
 }
 
-@keyframes introAnim {
-  0% { opacity: 0; }
-  10% { opacity: 1; }
-  40% { opacity: 1; }
-  100% { opacity: 0; }
+@keyframes fadeInOut {
+  0% {opacity:0;}
+  10% {opacity:1;}
+  50% {opacity:1;}
+  100% {opacity:0;}
 }
 
 /* MAIN */
 #main {
   display: none;
   height: 100vh;
-  background-size: cover;
-  background-position: center;
-  transition: background 3s;
+  background: black;
+  transition: background 3s ease;
 }
 
 .container {
@@ -52,48 +50,52 @@ body {
   height: 100%;
   align-items: center;
   justify-content: space-between;
-  padding: 50px;
+  padding: 40px;
 }
 
 /* LEFT */
 .left {
-  width: 40%;
+  width: 45%;
 }
 
 .left img {
-  width: 80%;
+  width: 70%;
   opacity: 0;
   animation: fadeLeft 3s forwards;
 }
 
 @keyframes fadeLeft {
-  to { opacity: 1; transform: translateX(0); }
+  from {opacity:0; transform:translateX(-40px);}
+  to {opacity:1; transform:translateX(0);}
 }
 
-/* TYPE TEXT */
+/* TEXT */
 #typeText {
   margin-top: 30px;
   font-size: 18px;
-  min-height: 100px;
+  min-height: 120px;
+  line-height: 1.5;
 }
 
 /* RIGHT */
 .right {
-  width: 40%;
+  width: 45%;
   text-align: center;
 }
 
 .right img {
-  width: 70%;
+  width: 60%; /* 🔥 MÁS PEQUEÑO */
+  max-height: 70vh;
 }
 
+/* BUTTONS */
 .buttons {
   margin-top: 20px;
 }
 
 button {
   padding: 10px 20px;
-  margin: 10px;
+  margin: 8px;
   background: white;
   border: none;
   cursor: pointer;
@@ -103,26 +105,22 @@ button {
 
 <body>
 
-<!-- INTRO -->
 <div id="intro">
   <img src="titulo.png">
 </div>
 
-<!-- MAIN -->
 <div id="main">
   <div class="container">
 
-    <!-- LEFT -->
     <div class="left">
       <img src="titulo.png">
       <div id="typeText"></div>
     </div>
 
-    <!-- RIGHT -->
     <div class="right">
       <img src="libro.png">
       <div class="buttons">
-        <button onclick="mostrarSinopsis()">Sobre el libro</button>
+        <button id="btn1" onclick="toggleInfo()">Sobre el libro</button>
         <button onclick="comprar()">Comprar</button>
       </div>
     </div>
@@ -132,11 +130,17 @@ button {
 
 <script>
 
-// Mostrar main después del intro
+let estado = "inicio";
+
+// INTRO → MAIN
 setTimeout(() => {
   document.getElementById("intro").style.display = "none";
   document.getElementById("main").style.display = "block";
-  document.getElementById("main").style.backgroundImage = "url('fondo.jpg')";
+
+  setTimeout(() => {
+    document.getElementById("main").style.backgroundImage = "url('fondo.jpg')";
+  }, 500);
+
   iniciarFrases();
 }, 5000);
 
@@ -145,11 +149,11 @@ setTimeout(() => {
 const frases = [
 "Todo lo que ocultamos… encuentra la forma de salir.",
 "¿Está usted preparado para el fin?",
-"La pesadilla no terminó. Se filtró en la realidad.",
-"¿Has visto algo… que no debería estar ahí?",
+"La pesadilla no terminó... Se filtró en la realidad.",
+"¿Has visto algo que no debería estar ahí?",
 "¿Escuchaste eso?... Mejor no voltees.",
-"Si miras hacia arriba… algo podría caer sobre ti.",
-"Sonaba mi canción favorita… pero había más ruido en mi cabeza."
+"Si miras hacia arriba… algo podría caer.",
+"Había más ruido en mi cabeza."
 ];
 
 let index = 0;
@@ -157,11 +161,13 @@ let texto = "";
 let escribiendo = true;
 
 function iniciarFrases(){
-  setInterval(animarTexto, 50);
+  loopFrases();
 }
 
-function animarTexto(){
+function loopFrases(){
   let target = document.getElementById("typeText");
+
+  if(estado !== "inicio") return;
 
   if(escribiendo){
     texto += frases[index].charAt(texto.length);
@@ -169,7 +175,8 @@ function animarTexto(){
 
     if(texto.length === frases[index].length){
       escribiendo = false;
-      setTimeout(()=>{},1000);
+      setTimeout(loopFrases, 1200);
+      return;
     }
 
   } else {
@@ -181,12 +188,22 @@ function animarTexto(){
       index = (index + 1) % frases.length;
     }
   }
+
+  setTimeout(loopFrases, 40);
 }
 
 
-// SINOPSIS
-function mostrarSinopsis(){
-  escribirTexto([
+// TOGGLE SINOPSIS
+function toggleInfo(){
+
+  let btn = document.getElementById("btn1");
+
+  if(estado === "inicio"){
+    estado = "sinopsis";
+    btn.innerText = "Regresar";
+
+    borrarTexto(() => {
+      escribirBloque([
 "El mundo.",
 "El universo.",
 "Nosotros.",
@@ -203,37 +220,72 @@ function mostrarSinopsis(){
 "Incluso desde nosotros mismos.",
 "",
 "El miedo es el precio de la conciencia."
-]);
+      ]);
+    });
+
+  } else {
+    estado = "inicio";
+    btn.innerText = "Sobre el libro";
+
+    borrarTexto(() => {
+      texto = "";
+      iniciarFrases();
+    });
+  }
+}
+
+
+// BORRAR TEXTO
+function borrarTexto(callback){
+  let target = document.getElementById("typeText");
+
+  function borrar(){
+    let txt = target.innerHTML.replace(/<br>/g,"");
+
+    if(txt.length > 0){
+      target.innerHTML = txt.slice(0,-1);
+      setTimeout(borrar, 20);
+    } else {
+      callback();
+    }
+  }
+
+  borrar();
+}
+
+
+// ESCRIBIR BLOQUE
+function escribirBloque(lineas){
+  let target = document.getElementById("typeText");
+  target.innerHTML = "";
+
+  let i = 0;
+
+  function escribir(){
+    if(i < lineas.length){
+      target.innerHTML += lineas[i] + "<br>";
+      i++;
+      setTimeout(escribir, 120);
+    }
+  }
+
+  escribir();
 }
 
 
 // COMPRAR
 function comprar(){
-  escribirTexto([
+  estado = "compra";
+
+  borrarTexto(() => {
+    escribirBloque([
 "Precio: $250 MXN",
 "Páginas: 120",
 "Autor: Eduardo Cavazos García",
 "",
-"Próximamente disponible."
-]);
-}
-
-
-// FUNCIÓN ESCRIBIR TEXTO
-function escribirTexto(lineas){
-  let target = document.getElementById("typeText");
-  target.innerHTML = "";
-  let i = 0;
-
-  function escribirLinea(){
-    if(i < lineas.length){
-      target.innerHTML += lineas[i] + "<br>";
-      i++;
-      setTimeout(escribirLinea, 200);
-    }
-  }
-
-  escribirLinea();
+"Disponible próximamente."
+    ]);
+  });
 }
 
 </script>
